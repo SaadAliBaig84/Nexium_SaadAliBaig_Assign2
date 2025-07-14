@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
+import { toast } from "react-toastify";
 export default function ResultsPage({
   blogData,
+  clear,
+  setClear,
 }: {
   blogData: { url: string; title: string; content: string };
+  clear: boolean;
+  setClear: (value: boolean) => void;
 }) {
   const [summary, setSummary] = useState<string | null>(null);
   const [translation, setTranslation] = useState<string | null>(null);
   useEffect(() => {
     if (!blogData) return;
     setSummary(null);
+    setTranslation(null);
     const summarize = async () => {
       try {
         const response = await fetch("/api/summarize", {
@@ -29,7 +35,7 @@ export default function ResultsPage({
     };
 
     summarize();
-  }, [blogData.content]);
+  }, [blogData]);
 
   useEffect(() => {
     if (!summary) return;
@@ -67,6 +73,7 @@ export default function ResultsPage({
               translated_summary: translation,
             }),
           });
+          toast.success("Data saved to database.");
         } catch (error) {
           console.error("Error saving to database:", error);
         }
@@ -75,8 +82,15 @@ export default function ResultsPage({
     }
   }, [summary, translation]);
 
+  useEffect(() => {
+    if (clear) {
+      setSummary(null);
+      setTranslation(null);
+      setClear(false);
+    }
+  }, [clear]);
   return (
-    <div className="min-h-screen w-full bg-[#14181d] text-[#EEEEEE] font-mono px-4 py-6 my-4 space-y-4">
+    <div className="w-full text-[#EEEEEE] font-mono px-4 py-6 my-4 space-y-4">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

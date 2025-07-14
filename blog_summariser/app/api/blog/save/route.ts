@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
+    const shared_id = new_blog._id.toString();
+    console.log("Shared ID:", shared_id);
     const response = await fetch(`${SUPABASE_URL}/rest/v1/summaries`, {
       headers: SUPABASE_HEADERS,
       method: "POST",
@@ -49,11 +50,14 @@ export async function POST(request: NextRequest) {
         title,
         summary,
         translation: translated_summary,
+        shared_id,
       }),
     });
 
     if (!response.ok) {
+      const errorDetails = await response.text();
       console.log("*********here********");
+      console.error("Supabase error response:", errorDetails);
       return NextResponse.json(
         { error: "Failed to save the summary" },
         { status: response.status }

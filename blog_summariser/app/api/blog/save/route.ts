@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const conn = await connectToDatabase();
+    await connectToDatabase();
     const new_blog = await Blog.create({
       url,
       title,

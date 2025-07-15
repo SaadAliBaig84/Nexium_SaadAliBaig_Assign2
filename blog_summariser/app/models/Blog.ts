@@ -14,3 +14,4 @@ const BlogSchema = new mongoose.Schema(
 );
 
 export const Blog = mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
+export type BlogType = mongoose.InferSchemaType<typeof BlogSchema>;

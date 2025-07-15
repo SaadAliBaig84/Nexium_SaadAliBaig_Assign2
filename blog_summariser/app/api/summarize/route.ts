@@ -7,7 +7,7 @@ const groq = new Groq({
 
 export async function POST(req: Request) {
   const { text } = await req.json();
-  const prompt = `Summarize the following text in a concise manner:\n\n${text}`;
+  const prompt = `Summarize this blog post clearly and thoroughly as if explaining to someone unfamiliar with the topic:\n\n${text}`;
   const chatCompletion = await groq.chat.completions.create({
     messages: [
       {

@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/lib/mongodb";
-import { Blog } from "@/app/models/Blog";
+import { Blog, BlogType } from "@/app/models/Blog";
+import mongoose from "mongoose";
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const SUPABASE_URL = process.env.SUPABASE_URL || "";
 if (!SUPABASE_SERVICE_ROLE_KEY || !SUPABASE_URL) {
@@ -22,9 +23,10 @@ type SupaSummary = {
   summary: string;
   translation: string;
   created_at: string;
+  shared_id: string;
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await connectToDatabase();
     const blogs = await Blog.find({}, "_id url title content created_at").sort({
@@ -53,21 +55,23 @@ export async function GET(request: NextRequest) {
     const summariesData: SupaSummary[] = await summaries.json();
 
     const supaMap = new Map(
-      summariesData.map((item: any) => [item.shared_id, item])
+      summariesData.map((item: SupaSummary) => [item.shared_id, item])
     );
-    const combined = blogs.map((blog: any) => {
-      const shared_id = blog._id.toString();
-      const matchingSupa = supaMap.get(shared_id);
-      return {
-        _id: shared_id,
-        title: blog.title,
-        url: blog.url,
-        content: blog.content,
-        created_at: blog.created_at,
-        summary: matchingSupa?.summary || "",
-        translated_summary: matchingSupa?.translation || "",
-      };
-    });
+    const combined = blogs.map(
+      (blog: BlogType & { _id: mongoose.Types.ObjectId }) => {
+        const shared_id = blog._id.toString();
+        const matchingSupa = supaMap.get(shared_id);
+        return {
+          _id: shared_id,
+          title: blog.title,
+          url: blog.url,
+          content: blog.content,
+          created_at: blog.created_at,
+          summary: matchingSupa?.summary || "",
+          translated_summary: matchingSupa?.translation || "",
+        };
+      }
+    );
     return NextResponse.json(combined, { status: 200 });
   } catch (error) {
     console.error("Error fetching summaries:", error);

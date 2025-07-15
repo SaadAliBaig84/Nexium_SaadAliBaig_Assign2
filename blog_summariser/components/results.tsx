@@ -62,7 +62,7 @@ export default function ResultsPage({
       const saveToDatabase = async () => {
         try {
           // Save the blog data, summary, and translation to the database
-          const response = await fetch("api/blog/save", {
+          await fetch("api/blog/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

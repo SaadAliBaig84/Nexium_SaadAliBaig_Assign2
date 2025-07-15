@@ -96,8 +96,8 @@ export default function ResultsPage({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <Card className="bg-[#393E46] border-0 shadow-md shadow-[#00ADB5]">
-          <CardHeader>
+        <Card className="bg-[#393E46] border-0 shadow-md shadow-[#00ADB5] flex justify-center items-center">
+          <CardHeader className="justify-center items-center">
             <CardTitle className="text-[#00ADB5] text-2xl">Summary</CardTitle>
           </CardHeader>
           <CardContent className="text-[#EEEEEE]">
@@ -114,8 +114,8 @@ export default function ResultsPage({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <Card className="bg-[#393E46] border-0 shadow-md shadow-[#00ADB5]">
-          <CardHeader>
+        <Card className="bg-[#393E46] border-0 shadow-md shadow-[#00ADB5] flex justify-center items-center">
+          <CardHeader className="justify-center items-center">
             <CardTitle className="text-[#00ADB5] text-2xl">
               Urdu Translation
             </CardTitle>
